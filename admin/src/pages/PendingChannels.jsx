@@ -65,7 +65,6 @@ const PendingChannels = () => {
                     }
                 }
             )
-            console.log(response.data)
             toast.success(response.data.message || 'Channel approved!')
             setSelectedChannel(null)
             getPendingChannels()

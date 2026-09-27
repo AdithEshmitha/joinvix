@@ -3,6 +3,7 @@ import axios from 'axios'
 import { toast } from "react-toastify"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { FaTrash } from "react-icons/fa6"
 
 const Channels = () => {
 
@@ -10,10 +11,10 @@ const Channels = () => {
     const [channels, setChannels] = useState([])
 
     const navigate = useNavigate()
+    const token = localStorage.getItem('admin_token')
 
     const getAllChannels = async () => {
 
-        const token = localStorage.getItem('admin_token')
 
         if (!token || token === null) {
             toast.error('Access Denied!')
@@ -35,6 +36,32 @@ const Channels = () => {
         } catch (error) {
             toast.error(error.message)
             setLoading(false)
+        }
+
+    }
+
+    const deleteChannel = async (id) => {
+
+        try {
+
+            if (!token || token === null) {
+                toast.error('Access Denied!')
+                navigate('/login')
+                return
+            }
+
+            const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/channels/admin/delete-channel/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            toast.success(response.data.message)
+            getAllChannels()
+        } catch (error) {
+            toast.error(error.message)
         }
 
     }
@@ -64,7 +91,7 @@ const Channels = () => {
 
                             <tr className="border-b border-text/10">
                                 <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Channel</th>
-                                <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Description</th>
+                                <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Status</th>
                                 <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Category</th>
                                 <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Followers</th>
                                 <th className="text-left text-text/70 tracking-wide text-[13px] font-semibold uppercase px-6 py-4">Likes</th>
@@ -113,7 +140,7 @@ const Channels = () => {
                                             </td>
 
                                             <td className="px-6 py-4">
-                                                <p className="text-text/70 text-[14px] line-clamp-2 max-w-70">{channel.description}</p>
+                                                <p className={`text-[14px] line-clamp-2 px-5 rounded-full w-fit text-center ${channel.status === "approved" ? "bg-green-100 text-green-600 border border-green-300" : channel.status === "pending" ? "bg-yellow-100 text-yellow-600 border border-yellow-300" : "bg-red-100 text-red-600 border border-red-300"}`}>{channel.status}</p>
                                             </td>
 
                                             <td className="px-6 py-4">
@@ -130,8 +157,8 @@ const Channels = () => {
 
                                             <td className="px-6 py-4">
                                                 <div className="flex justify-center">
-                                                    <button className="px-4 py-1.5 rounded-lg border border-text/10 text-text/70 text-[13px] font-medium hover:bg-gray-100 hover:text-text transition-all duration-200">
-                                                        Manage
+                                                    <button onClick={() => { deleteChannel(channel._id) }} className="px-4 py-1.5 rounded-lg border border-red-400 text-red-400 text-[13px] font-medium hover:bg-red-100 hover:text-red-500 transition-all duration-200">
+                                                        <FaTrash />
                                                     </button>
                                                 </div>
                                             </td>
