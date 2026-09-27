@@ -127,10 +127,24 @@ const Channels = () => {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-11 h-11 shrink-0">
-                                                        {channel.logo
-                                                            ? <img src={channel.logo} alt={channel.name} className="w-11 h-11 rounded-full object-cover" />
-                                                            : <div className="w-11 h-11 bg-green-100 flex justify-center items-center uppercase rounded-full text-green-700 font-semibold">{channel.name.charAt(0)}</div>
-                                                        }
+                                                        {channel.logo ? (
+                                                            <img
+                                                                src={channel.logo}
+                                                                alt=""
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = "none"
+                                                                    e.currentTarget.nextElementSibling.style.display = "flex"
+                                                                }}
+                                                                className="w-11 h-11 rounded-full object-cover"
+                                                            />
+                                                        ) : null}
+
+                                                        <div
+                                                            style={{ display: channel.logo ? "none" : "flex" }}
+                                                            className="w-11 h-11 bg-green-100 justify-center items-center uppercase rounded-full text-green-700 font-semibold"
+                                                        >
+                                                            {channel.name?.charAt(0).toUpperCase()}
+                                                        </div>
                                                     </div>
                                                     <div className="flex flex-col min-w-0">
                                                         <h2 className="text-text text-[15px] font-medium truncate">{channel.name}</h2>
