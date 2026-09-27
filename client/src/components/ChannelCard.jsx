@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { FaUsers } from "react-icons/fa"
-import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeartEmpty } from "react-icons/io";
 import { MdArrowRightAlt } from "react-icons/md";
 
 const ChannelCard = ({ channel }) => {
+
+    const [imageError, setImageError] = useState(false)
 
     return (
         <div className="group bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg hover:border-green-shade/30 transition-all duration-300">
@@ -15,10 +18,11 @@ const ChannelCard = ({ channel }) => {
                     {/* Logo */}
                     <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-green-50 border border-gray-100">
 
-                        {channel.logo ? (
+                        {channel.logo && !imageError ? (
                             <img
                                 src={channel.logo}
-                                alt={channel.name}
+                                alt=""
+                                onError={() => setImageError(true)}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
