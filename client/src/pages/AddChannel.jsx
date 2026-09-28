@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { FaCamera } from "react-icons/fa"
 import axios from "axios"
+import { toast } from 'react-toastify'
 import uploadLogo from "../utils/logoUpload"
 
 const AddChannel = () => {
@@ -166,8 +167,6 @@ const AddChannel = () => {
                 logo: "",
                 followers: ""
             })
-
-            navigate('/explore')
 
 
         } catch (error) {
