@@ -8,12 +8,34 @@ const ExlorePage = () => {
     const { channels, loading, error } = useContext(ChannelContext)
 
     const [searchInput, setSearchInput] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState('All')
 
-    const filteredChannels = channels?.filter((channel) =>
-        channel.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
-        channel.description?.toLowerCase().includes(searchInput.toLowerCase()) ||
-        channel.category?.toLowerCase().includes(searchInput.toLowerCase())
-    )
+    const filteredChannels = channels?.filter((channel) => {
+
+        const search = searchInput.toLowerCase()
+
+        const matchSearch =
+            channel.name?.toLowerCase().includes(search) ||
+            channel.description?.toLowerCase().includes(search) ||
+            channel.category?.toLowerCase().includes(search)
+
+        const matchCategory =
+            selectedCategory === "All" ||
+            channel.category === selectedCategory
+
+        return matchCategory && matchSearch
+    })
+
+    const categories = [
+        "All",
+        "Technology",
+        "News",
+        "Entertainment",
+        "Education",
+        "Sports",
+        "Business",
+        "Social"
+    ]
 
     return (
         <div className='flex flex-col items-center pt-25 py-15 w-full px-4 sm:px-6 md:px-10 lg:px-20 xl:px-25 gap-10'>
@@ -30,6 +52,24 @@ const ExlorePage = () => {
                     value={searchInput}
                     type="text"
                     placeholder='Search channels here' className='flex-1 w-full h-full border-none outline-none text-text/80 tracking-wide' />
+            </div>
+
+            <div className='max-w-screen w-full overflow-x-auto hide-scrollbar  flex items-center gap-3 py-5 border-t border-b border-text/10'>
+                {
+                    categories.map((category, index) => {
+                        const selectCat = selectedCategory === category
+                        return (
+                            <span
+                                onClick={() => {
+                                    setSelectedCategory(category)
+                                }}
+                                className={`${selectCat ? 'bg-green-shade text-white' : 'bg-white text-text'} px-5 py-2.5 transition-all duration-500 rounded-full text-sm tracking-wide cursor-pointer shadow-2xl`}
+                                key={index}>
+                                {category}
+                            </span>
+                        )
+                    })
+                }
             </div>
 
             <section className='w-full grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5'>
