@@ -45,7 +45,7 @@ export async function getChannelsToClients(req, res) {
 
     try {
         // FIND ALL CHANNELS
-        const channels = await Channel.find({ status: 'approved' }).sort({ cretedAt: -1 })
+        const channels = await Channel.find({ status: 'approved' }).sort({ createdAt: -1 })
         // RESPONSE SEND
         res.status(201).json({ success: true, message: 'Channels fetched successfully!', channels })
     } catch (error) {
@@ -59,7 +59,7 @@ export async function getAllChannels(req, res) {
 
     try {
         // FIND ALL CHANNELS
-        const channels = await Channel.find().sort({ cretedAt: -1 })
+        const channels = await Channel.find().sort({ createdAt: -1 })
         // RESPONSE SEND
         res.status(201).json({ success: true, message: 'Channels fetched successfully!', channels })
     } catch (error) {
