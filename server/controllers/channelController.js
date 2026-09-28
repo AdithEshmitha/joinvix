@@ -10,6 +10,12 @@ export async function addNewChannel(req, res) {
         if (!name || !description || !url || !category || !followers) {
             return res.status(404).json({ success: false, message: 'All fileds are required!' })
         }
+        // VALIDATE FOLLOWERS
+        const followerCount = Number(followers)
+
+        if (!Number.isInteger(followerCount) || followerCount < 0) {
+            return res.status(400).json({ success: false, message: "Invalid follower count!" })
+        }
         // EXISTING CHANNEL
         const existingChannel = await Channel.findOne({ url })
         if (existingChannel) {

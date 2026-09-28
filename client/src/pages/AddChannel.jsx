@@ -548,6 +548,7 @@ const AddChannel = () => {
                                         onChange={handleChange}
                                         placeholder="e.g. 5000"
                                         min="0"
+                                        max="100000000"
                                         className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white outline-none text-sm text-gray-800 placeholder:text-gray-400 focus:border-green-shade focus:ring-4 focus:ring-green-100 transition-all"
                                     />
 
