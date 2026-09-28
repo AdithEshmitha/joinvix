@@ -132,21 +132,35 @@ export async function deleteChannel(req, res) {
 
 }
 
-// ADD LIKE TO CHANNEL
-export async function addLikes(req, res) {
+// UPDATE FOLLOWERS
+export async function editFollowers(req, res) {
 
     try {
         const { channelID } = req.params
-        const channel = await Channel.findByIdAndUpdate(channelID,
-            { $inc: { likes: 1 } },
-            { returnDocument: 'after' }
-        )
-        if (!channel) {
-            return res.status(404).json({ success: false, message: 'Channel not found!' })
+        const { followers } = req.body
+        if (followers === undefined || followers === null || followers === "") {
+            return res.status(400).json({ success: false, message: "Followers value is required!" })
         }
-        res.status(200).json({ success: true, message: 'Channel liked successfully!', channel })
+
+        const followersNumber = Number(followers)
+
+        if (!Number.isInteger(followersNumber) || followersNumber < 0) {
+            return res.status(400).json({ success: false, message: "Followers must be a valid positive number!" })
+        }
+
+        const channel = await Channel.findByIdAndUpdate(
+            channelID,
+            { followers: followersNumber },
+            { returnDocument: "after" }
+        )
+
+        if (!channel) {
+            return res.status(404).json({ success: false, message: "Channel not found!" })
+        }
+
+        res.status(200).json({ success: true, message: "Followers updated successfully!", channel })
+
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }
-
 }

@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 import { useState } from "react"
+import { LuLink } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from 'axios'
-import { FaEye, FaCheck, FaTimes } from "react-icons/fa"
+import { FaEye, FaCheck, FaTimes, FaRegEdit } from "react-icons/fa"
 import { HiX } from "react-icons/hi"
 
 const PendingChannels = () => {
@@ -12,6 +13,9 @@ const PendingChannels = () => {
     const [loading, setLoading] = useState(false)
     const [selectedChannel, setSelectedChannel] = useState(null)
     const [actionLoading, setActionLoading] = useState(false)
+    const [copied, setCopied] = useState(false)
+    const [followers, setFollowers] = useState()
+    const [isShouldEdit, setIsShouldEdit] = useState(false)
 
     const navigate = useNavigate()
 
@@ -46,6 +50,57 @@ const PendingChannels = () => {
             setLoading(false)
         }
 
+    }
+
+    const editFollowers = async () => {
+        try {
+            setActionLoading(true)
+
+            const channelID = selectedChannel?._id
+
+            if (!channelID) {
+                toast.error('Channel ID is missing!')
+                return
+            }
+
+            const followersNumber = Number(followers)
+
+            if (!Number.isInteger(followersNumber) || followersNumber < 0) {
+                toast.error('Enter a valid followers count!')
+                return
+            }
+
+            const response = await axios.put(
+                `${import.meta.env.VITE_BACKEND_URL}/api/channels/admin/update-followers/${channelID}`,
+                {
+                    followers: followersNumber
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            setSelectedChannel(response.data.channel)
+            setFollowers(response.data.channel.followers)
+            setIsShouldEdit(false)
+
+            toast.success(
+                response.data.message || 'Followers updated successfully!'
+            )
+
+            getPendingChannels()
+
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message ||
+                error.message ||
+                'Failed to update followers!'
+            )
+        } finally {
+            setActionLoading(false)
+        }
     }
 
     const approveChannel = async (id) => {
@@ -101,6 +156,20 @@ const PendingChannels = () => {
         } finally {
             setActionLoading(false)
         }
+    }
+
+
+    const copyChannelLink = async (link) => {
+
+        try {
+            setCopied(false)
+            await navigator.clipboard.writeText(link)
+            setCopied(true)
+            copied && toast.success('Link copied to clipboard!')
+        } catch (error) {
+            toast.error(error.message)
+        }
+
     }
 
     useEffect(() => {
@@ -298,10 +367,51 @@ const PendingChannels = () => {
                                     <span className="text-text text-sm font-medium">{selectedChannel.category}</span>
                                 </div>
 
-                                <div className="flex flex-col gap-1 p-3 rounded-lg bg-gray-50 border border-text/5">
-                                    <span className="text-text/50 text-xs uppercase tracking-wide font-semibold">Followers</span>
-                                    <span className="text-text text-sm font-medium">{selectedChannel.followers}</span>
+                                <div className="flex flex-col gap-1 p-3 rounded-lg bg-gray-50 border border-text/5 w-full max-w-sm">
+                                    {/* Label */}
+                                    <span className="text-text/50 text-xs uppercase tracking-wide font-semibold">
+                                        Followers
+                                    </span>
+
+                                    <div className="flex items-center justify-between min-h-8">
+                                        {isShouldEdit ? (
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                value={followers}
+                                                onChange={(e) => setFollowers(e.target.value)}
+                                                className="text-text text-sm font-medium border border-gray-300 rounded px-2 py-1 outline-none bg-white w-full mr-2 focus:border-green-400"
+                                                placeholder="Enter followers"
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <span className="text-text text-sm font-medium">
+                                                {selectedChannel?.followers?.toLocaleString() || 0}
+                                            </span>
+                                        )}
+
+                                        <button
+                                            disabled={actionLoading}
+                                            onClick={() => {
+                                                if (isShouldEdit) {
+                                                    editFollowers()
+                                                } else {
+                                                    setFollowers(selectedChannel.followers)
+                                                    setIsShouldEdit(true)
+                                                }
+                                            }}
+                                            className="flex justify-center items-center shrink-0 w-7 h-7 rounded cursor-pointer transition-all duration-300 hover:bg-gray-300 bg-gray-200 disabled:opacity-50"
+                                            title={isShouldEdit ? "Save" : "Edit"}
+                                        >
+                                            {isShouldEdit ? (
+                                                <FaCheck className="text-[14px] text-green-600" />
+                                            ) : (
+                                                <FaRegEdit className="text-[15px] text-text" />
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
+
 
                                 <div className="flex flex-col gap-1 p-3 rounded-lg bg-gray-50 border border-text/5">
                                     <span className="text-text/50 text-xs uppercase tracking-wide font-semibold">Likes</span>
@@ -313,6 +423,18 @@ const PendingChannels = () => {
                                     <span className="text-amber-600 text-sm font-medium">Pending</span>
                                 </div>
 
+                            </div>
+
+                            <div className="flex flex-col gap-1 p-3 rounded-lg bg-gray-50 border border-text/5">
+                                <span className="text-text/50 text-xs uppercase tracking-wide font-semibold">Channel Link</span>
+                                <div className="flex items-center justify-between">
+                                    <p className="text-text/80 text-sm leading-relaxed">{selectedChannel.url}</p>
+                                    <span onClick={() => {
+                                        copyChannelLink(selectedChannel.url)
+                                    }} className="w-8 h-8 text-[15px] transition-all duration-300 hover:bg-green-300 bg-green-200 rounded text-text/80 text-xl font-semibold cursor-pointer flex justify-center items-center">
+                                        <LuLink />
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="flex flex-col gap-1 p-3 rounded-lg bg-gray-50 border border-text/5">
