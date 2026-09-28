@@ -103,7 +103,7 @@ const HomePage = () => {
 
                 </div>
 
-                <div className="w-full flex justify-center items-center mt-8">
+                {featuredChannels && <div className="w-full flex justify-center items-center mt-8">
                     <button
                         onClick={() => {
                             window.scrollTo({
@@ -113,7 +113,7 @@ const HomePage = () => {
                             navigate('/explore')
                         }}
                         className="text-green-shade font-semibold tracking-wide border-2 border-green-shade rounded transition-all duration-300 hover:bg-green-shade hover:text-white cursor-pointer h-11 px-5">Show All Channels</button>
-                </div>
+                </div>}
 
             </section>
         </main>
