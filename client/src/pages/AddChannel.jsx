@@ -1,7 +1,8 @@
-import { useContext, useState } from "react"
-import axios from "axios"
-import { ChannelContext } from "../context/channelContext"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { FaCamera } from "react-icons/fa"
+import axios from "axios"
+import uploadLogo from "../utils/logoUpload"
 
 const AddChannel = () => {
 
@@ -48,6 +49,37 @@ const AddChannel = () => {
                 type: "",
                 text: ""
             })
+        }
+    }
+
+    const handleLogoUpload = async (e) => {
+
+        const file = e.target.files[0]
+
+        if (!file) return
+
+        try {
+
+            setLoading(true)
+
+            const logoUrl = await uploadLogo(file)
+
+            setFormData((prev) => ({
+                ...prev,
+                logo: logoUrl
+            }))
+
+        } catch (error) {
+
+            setMessage({
+                type: "error",
+                text: error.message || "Failed to upload logo."
+            })
+
+        } finally {
+
+            setLoading(false)
+
         }
     }
 
@@ -523,26 +555,82 @@ const AddChannel = () => {
 
                             </div>
 
-
-                            {/* Logo */}
+                            {/* Channel Logo */}
                             <div>
 
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Channel Logo URL
+                                    Channel Logo
                                 </label>
 
-                                <input
-                                    type="url"
-                                    name="logo"
-                                    value={formData.logo}
-                                    onChange={handleChange}
-                                    placeholder="https://example.com/logo.png"
-                                    className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white outline-none text-sm text-gray-800 placeholder:text-gray-400 focus:border-green-shade focus:ring-4 focus:ring-green-100 transition-all"
-                                />
+                                <div className="flex items-center gap-4">
 
-                                <p className="mt-2 text-xs text-gray-400">
-                                    Use a publicly accessible image URL.
-                                </p>
+                                    {/* Clickable Preview */}
+                                    <label
+                                        htmlFor="logo"
+                                        className="relative w-20 h-20 rounded-2xl overflow-hidden bg-green-50 border border-gray-200 shrink-0 cursor-pointer group"
+                                    >
+
+                                        {formData.logo ? (
+
+                                            <img
+                                                src={formData.logo}
+                                                alt=""
+                                                className="w-full h-full object-cover"
+                                            />
+
+                                        ) : (
+
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-green-shade">
+
+                                                <FaCamera className="text-xl mb-1" />
+
+                                                <span className="text-[10px] font-medium">
+                                                    Add Logo
+                                                </span>
+
+                                            </div>
+
+                                        )}
+
+                                        {/* Hover Overlay */}
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+
+                                            <FaCamera className="text-white text-lg" />
+
+                                        </div>
+
+                                    </label>
+
+
+                                    {/* Hidden File Input */}
+                                    <input
+                                        id="logo"
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp"
+                                        onChange={handleLogoUpload}
+                                        className="hidden"
+                                    />
+
+
+                                    {/* Information */}
+                                    <div className="min-w-0">
+
+                                        <p className="text-sm font-medium text-gray-700">
+                                            {formData.logo
+                                                ? "Logo uploaded successfully"
+                                                : "Choose your channel logo"
+                                            }
+                                        </p>
+
+                                        <p className="mt-1 text-xs text-gray-400 leading-5">
+                                            Click the preview to select an image.
+                                            <br />
+                                            JPG, PNG or WebP
+                                        </p>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
