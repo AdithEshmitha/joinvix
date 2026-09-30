@@ -2,13 +2,22 @@ import { useState } from "react";
 import { FaUsers } from "react-icons/fa"
 import { IoMdHeartEmpty } from "react-icons/io";
 import { MdArrowRightAlt } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const ChannelCard = ({ channel }) => {
 
     const [imageError, setImageError] = useState(false)
 
+    const navigate = useNavigate()
+
     return (
-        <div className="group bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg hover:border-green-shade/30 transition-all duration-300">
+        <div onClick={() => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+            navigate(`/explore/channel/${channel._id}`)
+        }} channel={channel} className="group bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-lg hover:border-green-shade/30 transition-all duration-300">
 
             {/* Channel Header */}
             <div className="flex items-start justify-between gap-4">

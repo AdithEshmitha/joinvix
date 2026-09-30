@@ -1,6 +1,6 @@
 // IMPORT LIBRARY
 import express from 'express'
-import { addNewChannel, approveChannel, deleteChannel, editFollowers, getAllChannels, getChannelsToClients, rejectChannel } from '../controllers/channelController.js'
+import { addNewChannel, approveChannel, deleteChannel, editFollowers, getAllChannels, getChannel, getChannelsToClients, rejectChannel } from '../controllers/channelController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 import adminMiddleware from '../middleware/adminMiddleware.js'
 
@@ -10,6 +10,7 @@ const channelRoutes = express.Router()
 // PUBLIC
 channelRoutes.post('/add-channel', addNewChannel)
 channelRoutes.get('/get-channels', getChannelsToClients)
+channelRoutes.get('/get-channel/:channelId', getChannel)
 // ADMIN
 channelRoutes.get('/admin/get-all-channels', authMiddleware, adminMiddleware, getAllChannels)
 channelRoutes.put('/admin/approve-channel/:channelID', authMiddleware, adminMiddleware, approveChannel)

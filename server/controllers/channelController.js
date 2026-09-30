@@ -164,3 +164,19 @@ export async function editFollowers(req, res) {
         res.status(500).json({ success: false, message: error.message })
     }
 }
+
+// GET CHANNEL
+export async function getChannel(req, res) {
+
+    try {
+        const { channelId } = req.params
+        const channel = await Channel.findOne({ _id: channelId })
+        if (!channel) {
+            return res.status(404).json({ success: false, message: "Channel not found!" })
+        }
+        res.status(200).json({ success: true, message: "Channel fetched successfully!", channel })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+    }
+
+}

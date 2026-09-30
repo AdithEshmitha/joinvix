@@ -6,6 +6,7 @@ import ExlorePage from './pages/ExlorePage'
 import Footer from './components/Footer'
 import AddChannel from './pages/AddChannel'
 import FourZeroFourPage from './pages/FourZeroFourPage'
+import ChannelDetailsPage from './pages/ChannelDetailsPage'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/explore" element={<ExlorePage />} />
+        <Route path="/explore/channel/:channelId" element={<ChannelDetailsPage />} />
         <Route path="/add-channel" element={<AddChannel />} />
         <Route path="*" element={<FourZeroFourPage />} />
       </Routes>
