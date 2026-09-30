@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { ChannelContext } from '../context/channelContext'
 import ChannelCard from '../components/ChannelCard'
+import Breadcrumb from '../components/Breadcrumb'
 
 const ExlorePage = () => {
 
@@ -39,6 +40,8 @@ const ExlorePage = () => {
 
     return (
         <div className='flex flex-col items-center pt-25 py-15 w-full px-4 sm:px-6 md:px-10 lg:px-20 xl:px-25 gap-10'>
+
+            <Breadcrumb />
 
             <div className='flex flex-col w-full items-center mx-auto gap-8 mt-5'>
                 <span className='bg-green-50 border w-fit border-green-300 px-8 py-0.5 rounded-full text-xs md:text-sm text-green uppercase'>Discover your favourite channels</span>

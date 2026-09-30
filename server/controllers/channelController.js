@@ -170,16 +170,13 @@ export async function getChannel(req, res) {
 
     try {
         const { channelId } = req.params
-        console.log('[+] Channel ID: ' + channelId)
         const channel = await Channel.findOne({ _id: channelId })
         if (!channel) {
             return res.status(404).json({ success: false, message: "Channel not found!" })
         }
-        console.log('[+] Channel: ' + channel)
         res.status(200).json({ success: true, message: "Channel fetched successfully!", channel })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
-        console.log('[+] Error: ' + error)
     }
 
 }

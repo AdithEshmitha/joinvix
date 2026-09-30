@@ -4,6 +4,7 @@ import { FaCamera } from "react-icons/fa"
 import axios from "axios"
 import { toast } from 'react-toastify'
 import uploadLogo from "../utils/logoUpload"
+import Breadcrumb from "../components/Breadcrumb"
 
 const AddChannel = () => {
 
@@ -187,6 +188,8 @@ const AddChannel = () => {
 
             {/* Header */}
             <section className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-25 pt-25 md:pt-20 pb-8">
+
+                <Breadcrumb />
 
                 <div className="max-w-4xl mx-auto text-center">
 
